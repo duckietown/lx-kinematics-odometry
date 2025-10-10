@@ -14,8 +14,10 @@ def delta_phi(ticks: int, prev_ticks: int, resolution: int) -> float:
     """
 
     # TODO: these are random values, you have to implement your own solution in here
-    dphi = np.random.random()
-    # ---
+    
+    dticks = ticks - prev_ticks
+    dphi = (2 * np.pi) * (dticks / resolution)
+    
     return dphi
 
 
@@ -48,9 +50,23 @@ def estimate_pose(
         theta_curr:              estimated heading
     """
 
-    # These are random values, replace with your own
-    x_curr = np.random.random()
-    y_curr = np.random.random()
-    theta_curr = np.random.random()
-    # ---
+    # distance travelled by each wheel
+    d_left = R * delta_phi_left
+    d_right = R * delta_phi_right
+    
+    # how much the robot travelled
+    d_A = (d_right + d_left) / 2
+    
+    # corientation change
+    d_theta = (d_right - d_left) / baseline
+    
+    # new orientation
+    theta_mid = theta_prev + 0.5 * d_theta
+    theta_curr = theta_prev + d_theta
+    
+    # new position
+    x_curr = x_prev + d_A * np.cos(theta_mid)
+    y_curr = y_prev + d_A * np.sin(theta_mid)
+    
+    
     return x_curr, y_curr, theta_curr
