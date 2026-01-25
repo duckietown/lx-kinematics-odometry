@@ -2,9 +2,12 @@
 <a href="https://duckietown.com"><img src="./assets/images/dtlogo.png" alt="Duckietown Logo" width="50%"></a>
 </p>
 
-# Learning Experience (LX): Kinematics and Odometry
+# **Labo 2: Cinématique et odométrie**
 
-Find the most up-to-date instructions on [how to run LXs on the Duckietown manual](https://docs.duckietown.com/ente/duckietown-manual/60-learning-experiences/lx-general-procedure.html). 
+# Introduction
+
+Dans ce laboratoire, vous apprendrez comment nous pouvons passer d'un cadre de représentation à un autre, comment nous pouvons exploiter cela pour construire un modèle de la façon dont le robot se déplace (cinématique), et comment cela peut être utilisé pour créer un modèle de la façon dont le robot se déplace au fil du temps en fonction des données provenant des encodeurs (estimation de l'odométrie).
+
 
 # Instructions
 
@@ -20,111 +23,123 @@ Update your exercise definition and instructions,
 **NOTE:** to pull from upstream, you need to have completed the instructions in the [general procedure for running learning experiences in the Duckietown manual](https://docs.duckietown.com/ente/duckietown-manual/60-learning-experiences/lx-general-procedure.html) to *fork* this repository.
 
 
-## 2. Make sure your system is up-to-date
+##  Mais d'abord...
 
-- 💻 Always make sure your Duckietown Shell is updated to the latest version. See [installation instructions](https://docs.duckietown.com/ente/duckietown-manual/10-setup/02-software/duckietown-shell-dts-installation.html)
+Assurez-vous que votre système est à jour.
 
-- 💻 Update the shell commands: `dts update`
+- 💻 Veillez toujours à ce que votre  Duckietown Shell soit mise à jour vers la dernière version: `pipx upgrade duckietown-shell`
 
-- 💻 Update your laptop/desktop: `dts desktop update`
+- 💻 Mettre à jour les commandes du shell: `dts update`
 
-- 🚙 Update your Duckiebot: `dts duckiebot update ROBOTNAME` (where `ROBOTNAME` is the name of your (real or virtual - more on this later) Duckiebot chosen during the initialization procedure.)
+- 💻 Assurez-vous que toutes les images Docker présentes sur votre ordinateur sont à jour: `dts desktop update`
+
+- 🚙 Assurez-vous que toutes les images Docker présentes sur votre ordinateur sont à jour: `dts duckiebot update ROBOTNAME`
+(where `ROBOTNAME` is the name of your Duckiebot - real or virtual.)
 
 
+# Comment réaliser cet exercice de laboratoire ?
 
-## 3. Work on the exercise
+## Lancez l'éditeur de code.
 
-
-### Launch the code editor
-
-Open the code editor by running the following command,
+Ouvrez l'éditeur de code (VSCode) en exécutant la commande suivante:
 
 ```
 dts code editor
 ```
 
-Wait for a URL to appear on the terminal, then click on it or copy-paste it in the address bar
-of your browser to access the code editor. The first thing you will see in the code editor is
-this same document, you can continue there.
+Attendez qu'une URL s'affiche dans le terminal, puis cliquez dessus ou copiez-la et collez-la dans la barre d'adresse de votre navigateur pour accéder à l'éditeur de code. Le premier élément que vous verrez dans l'éditeur de code est ce même document. 
+
+**Vous pouvez poursuivre votre travail à partir de là**
 
 
-### Walkthrough of notebooks
+## Les notebooks "Jupyter"
 
-**NOTE**: You should be reading this from inside the code editor in your browser.
+**REMARQUE** : Vous devez lire ce message depuis l'éditeur de code de votre navigateur.
 
-Inside the code editor, use the navigator sidebar on the left-hand side to navigate to the
-`notebooks` directory and open the first notebook.
+Dans l'éditeur de code, utilisez la barre latérale de navigation située à gauche pour accéder au
+dossier `notebooks` et ouvrir le premier notebook.
 
-Follow the instructions on the notebook and work through the notebooks in sequence.
+Suivez les instructions du notebook et parcourez les notebooks dans l'ordre.
 
+Une fois que vous avez terminé toutes les tâches des carnets de notes, vous pouvez suivre les instructions suivantes pour tester votre code.
 
-### Building your code
+## Exécution de votre code
 
-You can build your code with 
+### Tester avec le Duckiematrix (optionnel)
 
-```
-dts code build -R ROBOT_NAME
-```
+Il peut être utile de tester votre code dans un environnement de simulation avant de l'essayer sur le robot réel. Pour cela, nous avons le Duckiematrix.
 
-This will build a docker image with your code compiled inside - you should see your ROS node get built during the process. 
-
-
-### Testing with Duckiematrix
-
-In order to test your code in the Duckiematrix you will need a virtual robot. You can create one with the command:
+Pour tester votre code dans Duckiematrix, vous aurez besoin d'un robot virtuel. Vous pouvez en créer un avec la commande suivante:
 
 ```
-dts duckiebot virtual create [VIRTUAL_ROBOT_NAME]
+dts duckiebot virtual create [VBOT]
 ```
 
-where `[VIRTUAL_ROBOT_NAME]` can be anything you like (but remember it for later).
+où `[VBOT]` peut être n'importe quoi (mais n'oubliez pas ce nom pour la suite).
 
-Then you can start your virtual robot with the command:
+Vous pouvez ensuite démarrer votre robot virtuel avec la commande:
 
 ```
-dts duckiebot virtual start [VIRTUAL_ROBOT_NAME]
+dts duckiebot virtual start [VBOT]
 ```
 
-You should see it with a status `Booting` and finally `Ready` if you look at `dts fleet discover`: 
+Vous devriez le voir avec le statut « Booting » (démarrage) et enfin « Ready » (prêt) si vous consultez la commande `dts fleet discover` :
 
 ```
      | Hardware |   Type    | Model |  Status  | Hostname 
 ---  | -------- | --------- | ----- | -------- | ---------
-vbot |  virtual | duckiebot | DB21J |  Ready   | vbot.local
+[VBOT] |  virtual | duckiebot | DB21J |  Ready   | [VBOT].local
 ```
 
-Now that your virtual robot is ready you can start the Duckiematrix. From this exercise directory do:
+Maintenant que votre robot virtuel est prêt, vous pouvez démarrer Duckiematrix. Depuis ce répertoire d'exercices, exécutez la commande suivante :
 
 ```
 dts code start_matrix
 ```
 
-You should see the Unity-based Duckiematrix simulator start up. 
+Vous devriez voir le simulateur Duckiematrix, basé sur Unity, démarrer. L'écran de démarrage ressemblera à ceci :
+
+![duckiematrix_start](assets/duckiematrix_start.png)
+
+À partir d'ici, vous pouvez cliquer n'importe où dans la fenêtre et appuyer sur la touche [ENTRÉE] pour l'activer. Vous pouvez ensuite déplacer le petit canard vers le Duckiebot à l'aide des touches « w », « a », « s » et « d », ou modifier l'angle de la caméra pour observer le Duckiebot avec la souris. Vous pouvez également passer à une vue de dessus en appuyant sur la touche « v », ce qui vous donnera une vue similaire à celle-ci :
+
+![duckiematrix_overhead](assets/duckiematrix_overhead.png)
 
 
-### 💻 Testing 
+### "Build" votre code
 
-
-To test your code in the duckiematrix you can do:
+Vous pouvez build le code avec
 
 ```
-dts code workbench -m -R [VIRTUAL_ROBOT_NAME]
+dts code build -R ROBOTNAME
 ```
 
-and to test your code on your real Duckiebot you can do:
+où ROBOTNAME peut être un robot réel ou virtuel.
+
+### Tester le code
+
+Vous pouvez ensuite exécuter votre code avec
 
 ```
-dts code workbench -R [ROBOT_NAME]
+dts code workbench -R ROBOTNAME [-m]
 ```
 
+où ROBOTNAME peut être un robot réel ou virtuel, mais s'il s'agit d'un robot virtuel, vous devez inclure l'option `-m` pour indiquer que vous souhaitez le tester dans Duckiematrix.
 
-In another terminal, you can launch the `noVNC` viewer for this exercise which can be useful to send commands to the robot and view the odometry that you are calculating in the RViZ window. 
+
+
+Dans un autre terminal (sur l'ordinateur), vous pouvez lancer le visualiseur `noVNC` pour cet exercice, qui peut être utile pour envoyer des commandes au robot et visualiser l'odométrie que vous calculez dans la fenêtre RViZ.
 
 ```
 dts code vnc -R [ROBOT_NAME]
 ```
 
-where `[ROBOT_NAME]` could be the real or the virtual robot (use whichever you ran the `dts code workbench` command with).
+où `[ROBOT_NAME]` peut être le robot réel ou virtuel (utilisez celui avec lequel vous avez exécuté la commande `dts code workbench`).
 
-Now you can proceed to the [first notebook](./notebooks/01-Representations/pose_representation.ipynb).
+Vous pouvez maintenant passer au [premier cahier](./notebooks/01-Representations/pose_representation.ipynb).
 
+
+## Crédits
+
+Cet exercice a bénéficié de contributions importantes de
+[Rey Reza Wiyatno](https://rrwiyatn.github.io/). 
