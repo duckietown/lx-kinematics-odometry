@@ -9,20 +9,6 @@
 Dans ce laboratoire, vous apprendrez comment nous pouvons passer d'un cadre de représentation à un autre, comment nous pouvons exploiter cela pour construire un modèle de la façon dont le robot se déplace (cinématique), et comment cela peut être utilisé pour créer un modèle de la façon dont le robot se déplace au fil du temps en fonction des données provenant des encodeurs (estimation de l'odométrie).
 
 
-# Instructions
-
-**NOTE:** All commands below are intended to be executed from the root directory of this exercise (i.e., the directory containing this `README`).
-
-
-## 1. Make sure your exercise is up-to-date
-
-Update your exercise definition and instructions,
-
-    git pull upstream ente
-
-**NOTE:** to pull from upstream, you need to have completed the instructions in the [general procedure for running learning experiences in the Duckietown manual](https://docs.duckietown.com/ente/duckietown-manual/60-learning-experiences/lx-general-procedure.html) to *fork* this repository.
-
-
 ##  Mais d'abord...
 
 Assurez-vous que votre système est à jour.
