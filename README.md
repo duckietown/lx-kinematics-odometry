@@ -145,8 +145,7 @@ ros2 service call /[ROBOT_NAME]/encoder_pose_node/reset std_srvs/srv/Trigger
 ```
 
 The editor connects to your robot when it knows its name: the notebooks do it with the `ros = RosSession(ROBOT)` cell, 
-the terminal does it when the `VEHICLE_NAME` environment variable is set (if `echo $VEHICLE_NAME` prints nothing in 
-your terminal, start a shell that knows your robot with `VEHICLE_NAME=[ROBOT_NAME] bash` first).
+run `dt-ros2-connect [ROBOT_NAME]` in the terminal first.
 
 Troubleshooting:
 
