@@ -10,10 +10,9 @@ class UnitTestMessage:
         # creating a dummy wheel encoder message to allow testing how to read fields
 
         header = Header()
-        header.seq = 372
-        # rospy.Time.now() is the correct stamp, anyway this works only when a node is initialized
-        header.stamp.secs = 1618436796
-        header.stamp.nsecs = 55785179
+        # node.get_clock().now().to_msg() is the correct stamp, anyway this works only when a node is initialized
+        header.stamp.sec = 1618436796
+        header.stamp.nanosec = 55785179
         header.frame_id = f"agent/left_wheel_axis"
 
         encoder_msg = WheelEncoderStamped(

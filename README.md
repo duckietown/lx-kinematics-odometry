@@ -66,7 +66,7 @@ You can build your code with
 dts code build -R ROBOT_NAME
 ```
 
-This will build a docker image with your code compiled inside - you should see your ROS node get built during the process. 
+This will build a docker image with your code compiled inside - you should see your ROS 2 package get built during the process. 
 
 
 ### Testing with Duckiematrix
@@ -74,7 +74,7 @@ This will build a docker image with your code compiled inside - you should see y
 In order to test your code in the Duckiematrix you will need a virtual robot. You can create one with the command:
 
 ```
-dts duckiebot virtual create [VIRTUAL_ROBOT_NAME]
+dts duckiebot virtual create --type duckiebot --configuration DB21J [VIRTUAL_ROBOT_NAME]
 ```
 
 where `[VIRTUAL_ROBOT_NAME]` can be anything you like (but remember it for later).
@@ -102,6 +102,19 @@ dts code start_matrix
 You should see the Unity-based Duckiematrix simulator start up. 
 
 
+### Starting the ROS 2 stack of your robot
+
+This exercise runs on the ROS 2 stack of the robot. Virtual robots still boot with the ROS 1 stack by default, so
+the ROS 2 stack has to be started explicitly (this is needed once per boot, for both virtual and real robots):
+
+```
+dts stack up -R [ROBOT_NAME] ros2/duckiebot
+dts stack up -R [ROBOT_NAME] ros2-core/default
+```
+
+where `[ROBOT_NAME]` is the name of your real or virtual robot.
+
+
 ### 💻 Testing 
 
 
@@ -117,14 +130,30 @@ and to test your code on your real Duckiebot you can do:
 dts code workbench -R [ROBOT_NAME]
 ```
 
-
-In another terminal, you can launch the `noVNC` viewer for this exercise which can be useful to send commands to the robot and view the odometry that you are calculating in the RViZ window. 
+The workbench runs your `encoder_pose_node` against the robot and streams its logs to the terminal. 
+The code editor is your window on the robot: the notebooks contain panels that plot the odometry you are 
+calculating, show what the robot sees and let you drive it (a virtual joystick), and a terminal opened inside the 
+editor (menu > Terminal > New Terminal) has the ROS 2 command line tools, e.g.
 
 ```
-dts code vnc -R [ROBOT_NAME]
+ros2 topic list
+ros2 topic echo /[ROBOT_NAME]/left_wheel_encoder_driver_node/tick
+ros2 node list
+ros2 param list /[ROBOT_NAME]/encoder_pose_node
+ros2 param set /[ROBOT_NAME]/encoder_pose_node verbose false
+ros2 service call /[ROBOT_NAME]/encoder_pose_node/reset std_srvs/srv/Trigger
 ```
 
-where `[ROBOT_NAME]` could be the real or the virtual robot (use whichever you ran the `dts code workbench` command with).
+The editor connects to your robot when it knows its name: the notebooks do it with the `ros = RosSession(ROBOT)` cell, 
+the terminal does it when the `VEHICLE_NAME` environment variable is set (if `echo $VEHICLE_NAME` prints nothing in 
+your terminal, start a shell that knows your robot with `VEHICLE_NAME=[ROBOT_NAME] bash` first).
+
+Troubleshooting:
+
+- `ros2 topic list` / `ros2 node list` come back empty: the graph takes a few seconds to sync through the robot's 
+  zenoh router, use `ros2 topic list --no-daemon --spin-time 5` (same for `ros2 node list`).
+- the robot does not move with the virtual joystick: check which topic the kinematics node of your robot listens to 
+  with `ros2 node info /[ROBOT_NAME]/kinematics_node`. The joystick publishes on `/[ROBOT_NAME]/car_cmd_switch_node/cmd`; 
+  older robot images listen on `/[ROBOT_NAME]/car_cmd`, in that case use `Joystick(ros, topic="car_cmd")` in the notebook.
 
 Now you can proceed to the [first notebook](./notebooks/01-Representations/pose_representation.ipynb).
-
