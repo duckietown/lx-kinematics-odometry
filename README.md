@@ -144,8 +144,8 @@ ros2 param set /[ROBOT_NAME]/encoder_pose_node verbose false
 ros2 service call /[ROBOT_NAME]/encoder_pose_node/reset std_srvs/srv/Trigger
 ```
 
-The editor connects to your robot when it knows its name: the notebooks do it with the `ros = RosSession(ROBOT)` cell, 
-run `dt-ros2-connect [ROBOT_NAME]` in the terminal first.
+The editor connects to your robot when it knows its name: the notebooks do it with the `ros = RosSession(ROBOT)` cell;
+in a terminal, run `dt-ros2-connect [ROBOT_NAME]` first.
 
 Troubleshooting:
 
