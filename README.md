@@ -125,8 +125,8 @@ This exercise runs on the ROS 2 stack of the robot. Virtual robots still boot wi
 the ROS 2 stack has to be started explicitly (this is needed once per boot, for both virtual and real robots):
 
 ```
-dts stack up -R [ROBOT_NAME] ros2/duckiebot
-dts stack up -R [ROBOT_NAME] ros2-core/default
+dts stack up -H [ROBOT_NAME] ros2/duckiebot
+dts stack up -H [ROBOT_NAME] ros2-core/default
 ```
 
 where `[ROBOT_NAME]` is the name of your real or virtual robot.
